@@ -13,7 +13,11 @@ public class PickUpOrder implements Order{
     private LocalDateTime pickUpDate;
     private List<MenuItem> itemList;
 
-    public PickUpOrder(int id){
-        this.orderDate = LocalDateTime.now();
+    public PickUpOrder(int id, int userId, int placeId, LocalDateTime orderDate, List<MenuItem> itemList) {
+        this.id = id;
+        this.userId = userId;
+        this.placeId = placeId;
+        this.orderDate = orderDate;
+        this.itemList = itemList;
     }
 }

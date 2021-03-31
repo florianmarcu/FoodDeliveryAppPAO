@@ -6,6 +6,7 @@ import models.order.Order;
 import models.place.Place;
 import models.user.User;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,11 +14,11 @@ public class Database {
     private static Database instance = null;
 
     private Database(){
-        menus = Arrays.asList();
-        users = Arrays.asList();
-        places = Arrays.asList();
-        orders = Arrays.asList();
-        couriers = Arrays.asList();
+        menus = new ArrayList<>();
+        users = new ArrayList<>();
+        places = new ArrayList<>();
+        orders = new ArrayList<>();
+        couriers = new ArrayList<>();
     }
 
     public static Database instance(){
@@ -26,11 +27,11 @@ public class Database {
         return instance;
     }
 
-    public List<Menu> menus;
-    public List<User> users;
-    public List<Place> places;
-    public List<Order> orders;
-    public List<Courier> couriers;
+    public ArrayList<Menu> menus;
+    public ArrayList<User> users;
+    public ArrayList<Place> places;
+    public ArrayList<Order> orders;
+    public ArrayList<Courier> couriers;
 
 
     public void getAllUsers(){

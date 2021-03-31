@@ -4,12 +4,15 @@ import database.Database;
 import models.courier.Courier;
 import models.menu.Menu;
 import models.menu.MenuItem;
+import models.order.DeliveryOrder;
 import models.order.Order;
+import models.order.PickUpOrder;
 import models.place.Place;
 import models.user.User;
 
 import javax.xml.crypto.Data;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -55,7 +58,7 @@ public class MenuService {
     public static void start(){
         printMenu();
         while(true){
-
+            System.out.println("OK");
             Scanner input = new Scanner(System.in);
             try{
                 String value = input.nextLine();
@@ -66,13 +69,19 @@ public class MenuService {
                     case "1": {
                         System.out.println("Numele: ");
                         String name = input.nextLine();
-                        System.out.println(name);
 
                         User user = new User(
                                 Database.instance().users.size(),
                                 name
                         );
-                        Database.instance().users.add(user);
+                        //System.out.println(user.getName());
+                        try{
+                            Database.instance().users.add(user);
+                            System.out.println(Database.instance().users.size());
+                        }
+                        catch(Exception e){
+                            System.out.println(String.format("eroare %s",e.getMessage()));
+                        }
                         break;
                     }
                     case "2": {
@@ -84,7 +93,7 @@ public class MenuService {
                         System.out.println("Cream meniul:\n");
                         System.out.println("Introduceti numarul de produse: \n");
                         int n = input.nextInt();
-                        List<MenuItem> itemList = Arrays.asList();
+                        ArrayList<MenuItem> itemList = new ArrayList<>();
                         for(int i = 0; i<n;i++){
                             System.out.println(String.format("Pentru produsul %d:\n",i+1));
                             System.out.println("Titlul :\n");
@@ -138,6 +147,7 @@ public class MenuService {
                                     "Trebuie sa existe cel putin o valoare pentru fiecare (utilizator, curier, local)");
                             break;
                         }
+                        Order order;
                         System.out.println("Cream o comanda:");
                         System.out.println("Alege tipul comenzii: \n 1) LIVRARE\n 2) PICKUP\n");
                         String orderType = input.nextLine();
@@ -158,20 +168,62 @@ public class MenuService {
                                 System.out.println("Produse disponibile");
                                 Database.instance().places.get(idPlace).printMenu();
                                 System.out.println("Alege id-urile produselor (dupa formatul 1 2 3 1):");
-                                String menuIds = input.nextLine();
-
+                                String[] menuIds = input.nextLine().split(" ");
+                                ArrayList<MenuItem> itemList = new ArrayList<>();
+                                for(int i = 0; i< menuIds.length; i++)
+                                    itemList.add(
+                                            Database.instance()
+                                                    .places.get(idPlace)
+                                                    .getMenu().getItemList()
+                                                    .get((int)menuIds[i].charAt(0))
+                                    );
+                                System.out.println("Introdu adresa de livrare");
+                                String address = input.nextLine();
+                                order = new DeliveryOrder(
+                                        Database.instance().orders.size(),
+                                        idUser,
+                                        idPlace,
+                                        idCourier,
+                                        LocalDateTime.now(),
+                                        itemList,
+                                        address
+                                );
                                 break;
                             }
                             case "PICKUP": {
+                                System.out.println("Useri disponibili");
+                                Database.instance().getAllUsers();
+                                System.out.println("Alege id-ul utilizatorului");
+                                int idUser = input.nextInt();
+                                System.out.println("Localuri disponibili");
+                                Database.instance().getAllCouriers();
+                                System.out.println("Alege id-ul localului");
+                                int idPlace = input.nextInt();
+                                System.out.println("Produse disponibile");
+                                Database.instance().places.get(idPlace).printMenu();
+                                System.out.println("Alege id-urile produselor (dupa formatul 1 2 3 1):");
+                                String[] menuIds = input.nextLine().split(" ");
+                                ArrayList<MenuItem> itemList = new ArrayList<>();
+                                for(int i = 0; i< menuIds.length; i++)
+                                    itemList.add(
+                                            Database.instance()
+                                                    .places.get(idPlace)
+                                                    .getMenu().getItemList()
+                                                    .get((int)menuIds[i].charAt(0))
+                                    );
+                                order = new PickUpOrder(
+                                        Database.instance().orders.size(),
+                                        idUser,
+                                        idPlace,
+                                        LocalDateTime.now(),
+                                        itemList
+                                );
                                 break;
                             }
+                            default: System.out.println("Ceva este gresit\n");return;
                         }
-//                        Order order = new Order(
-//                                Database.instance().orders.size(),
-//                                name,
-//                                phoneNumber
-//                        );
-//                        Database.instance().orders.add(order);
+
+                        Database.instance().orders.add(order);
                         break;
                     }
                     case "5":{
@@ -181,30 +233,35 @@ public class MenuService {
 
                     }
                     case "7":{
-                        List<User> users = Database.instance().users;
+                        ArrayList<User> users = Database.instance().users;
+                        System.out.println(users.size());
                         for(int i = 0; i < users.size(); i++){
-                            System.out.println(String.format("Utilizatorul %d:\n",i+1));
-                            System.out.println(String.format("Nume: %s:\n", users.get(i).getName()));
+                            System.out.println(String.format("Utilizatorul %d:",i+1));
+                            System.out.println(String.format("Nume: %s", users.get(i).getName()));
                             System.out.println(String.format("Istoric comenzi %d:\n\n"));
-
+                            for(int j = 0; j < users.get(i).getOrderHistory().size(); j++){
+                                System.out.println(String.format("Utilizatorul %d:",i+1));
+                                System.out.println(String.format("Nume: %s", users.get(i).getName()));
+                                System.out.println(String.format("Istoric comenzi %d:\n\n"));
+                            }
                         }
                         break;
                     }
                     case "8":{
-                        List<Place> places = Database.instance().places;
+                        ArrayList<Place> places = Database.instance().places;
                         for(int i = 0; i < places.size(); i++){
-                            System.out.println(String.format("Localul %d:\n",i+1));
-                            System.out.println(String.format("Nume: %s:\n", places.get(i).getName()));
+                            System.out.println(String.format("Localul %d",i+1));
+                            System.out.println(String.format("Nume: %s", places.get(i).getName()));
                             System.out.println(String.format("Istoric comenzi %d:\n\n"));
 
                         }
                         break;
                     }
                     case "9":{
-                        List<Courier> couriers = Database.instance().couriers;
+                        ArrayList<Courier> couriers = Database.instance().couriers;
                         for(int i = 0; i < couriers.size(); i++){
                             System.out.println(String.format("Curierul %d:\n",i+1));
-                            System.out.println(String.format("Nume: %s:\n", couriers.get(i).getName()));
+                            System.out.println(String.format("Nume: %s", couriers.get(i).getName()));
                             System.out.println(String.format("Istoric comenzi %d:\n\n"));
 
                         }
