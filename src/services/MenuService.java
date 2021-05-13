@@ -21,6 +21,7 @@ import java.util.Scanner;
 // Clasa de tip Singleton
 public class MenuService {
     private static MenuService instance = null;
+
     private MenuService(){
 
     }
@@ -55,7 +56,7 @@ public class MenuService {
         );
     }
 
-    public static void start(){
+        public static void start(){
         printMenu();
         while(true){
             System.out.println("OK");
