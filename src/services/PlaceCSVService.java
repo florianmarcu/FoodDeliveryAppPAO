@@ -23,6 +23,7 @@ public class PlaceCSVService {
             ArrayList<MenuItem> itemList = new ArrayList<>();
             Menu menu = new Menu(
                     1,
+                    "",
                     new ArrayList<MenuItem>()
             );
             String type = p.get(3);

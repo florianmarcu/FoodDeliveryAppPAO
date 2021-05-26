@@ -1,5 +1,6 @@
 package services;
 
+import config.DataSetup;
 import database.Database;
 import models.courier.Courier;
 import models.menu.Menu;
@@ -9,12 +10,10 @@ import models.order.Order;
 import models.order.PickUpOrder;
 import models.place.Place;
 import models.user.User;
+import repository.UserRepository;
 
-import javax.xml.crypto.Data;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
 // Serviciul prin care se interactioneaza cu sistemul
@@ -34,6 +33,10 @@ public class MenuService {
     }
 
     private static void printMenu(){
+
+        DataSetup setUpData = new DataSetup();
+        //setUpData.setUp();
+
         System.out.println(
                 "------------   Food Delivery App   -------------\n" +
                         "Pentru a efectua o instructiune, tasteaza inputul corespunzator:\n" +
@@ -52,7 +55,9 @@ public class MenuService {
                         "9) Afiseaza toti curierii\n" +
                         "10) Afiseaza utilizatorul cu id-ul...\n" +
                         "11) Afiseaza localul cu id-ul...\n" +
-                        "12) Afiseaza curierul cu id-ul...\n"
+                        "12) Afiseaza curierul cu id-ul...\n" +
+                        "13) Modifica numele userului cu id-ul...\n" +
+                        "14) Sterge userul cu id-ul...\n"
         );
     }
 
@@ -70,11 +75,11 @@ public class MenuService {
                     case "1": {
                         System.out.println("Numele: ");
                         String name = input.nextLine();
-
+                        UserRepository ur = new UserRepository();
                         User user = new User(
-                                Database.instance().users.size(),
                                 name
                         );
+                        ur.insertUser(user);
                         //System.out.println(user.getName());
                         try{
                             Database.instance().users.add(user);
@@ -84,6 +89,7 @@ public class MenuService {
                             System.out.println(String.format("eroare %s",e.getMessage()));
                         }
                         break;
+
                     }
                     case "2": {
                         System.out.println("Numele: ");
@@ -117,6 +123,7 @@ public class MenuService {
                         }
                         Menu menu = new Menu(
                                 Database.instance().menus.size(),
+                                "",
                                 itemList
                         );
                         Place place = new Place(
@@ -143,6 +150,7 @@ public class MenuService {
                         break;
                     }
                     case "4":{
+
                         if(Database.instance().couriers.size() == 0 || Database.instance().users.size() == 0 || Database.instance().places.size() == 0){
                             System.out.println("Nu exista suficiente date pentru a crea o comanda\n" +
                                     "Trebuie sa existe cel putin o valoare pentru fiecare (utilizator, curier, local)");
@@ -236,7 +244,7 @@ public class MenuService {
                     case "7":{
                         ArrayList<User> users = Database.instance().users;
                         System.out.println(users.size());
-                        for(int i = 0; i < users.size(); i++){
+                        /*for(int i = 0; i < users.size(); i++){
                             System.out.println(String.format("Utilizatorul %d:",i+1));
                             System.out.println(String.format("Nume: %s", users.get(i).getName()));
                             System.out.println(String.format("Istoric comenzi %d:\n\n"));
@@ -245,7 +253,7 @@ public class MenuService {
                                 System.out.println(String.format("Nume: %s", users.get(i).getName()));
                                 System.out.println(String.format("Istoric comenzi %d:\n\n"));
                             }
-                        }
+                        }*/
                         break;
                     }
                     case "8":{
@@ -266,6 +274,49 @@ public class MenuService {
                             System.out.println(String.format("Istoric comenzi %d:\n\n"));
 
                         }
+                        break;
+                    }
+                    case "10":{
+                        System.out.println("Id-ul:");
+                        int id = input.nextInt();
+                        /*ArrayList<User> users = Database.instance().users;
+                        for(int i = 0; i < users.size(); i++){
+                            if(users.get(i).getId() == id){
+                                System.out.println(users.get(i).getName());
+                                break;
+                            }
+                        }*/
+                        UserRepository ur = new UserRepository();
+                        User user = ur.getUserById(id);
+                        System.out.println(user.getName());
+                        break;
+                    }
+                    case "13":{
+                        System.out.println("Id-ul:");
+                        int id = input.nextInt();
+                        System.out.println("Numele:");
+                        String newName = input.nextLine();
+                        ArrayList<User> users = Database.instance().users;
+                        for(int i = 0; i < users.size(); i++){
+                            if(users.get(i).getId() == id){
+                                users.get(i).setName(newName);
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                    case "14":{
+                        System.out.println("Id-ul:");
+                        int id = input.nextInt();
+                        /*ArrayList<User> users = Database.instance().users;
+                        for(int i = 0; i < users.size(); i++){
+                            if(users.get(i).getId() == id){
+                                users.remove(i);
+                                break;
+                            }
+                        }*/
+                        UserRepository ur = new UserRepository();
+                        ur.deleteUserWithId(id);
                         break;
                     }
                     //case "clear": Runtime.getRuntime().exec("cls"); break;

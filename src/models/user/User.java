@@ -8,6 +8,7 @@ import java.util.List;
 import java.time.LocalDateTime;
 
 public class User {
+
     private int id;
     private String name;
     private LocalDateTime dateRegistered;
@@ -17,8 +18,7 @@ public class User {
         return orderHistory;
     }
 
-    public User(int id, String name){
-        this.id = id;
+    public User(String name){
         this.name = name;
         this.dateRegistered = LocalDateTime.now();
         this.orderHistory = new ArrayList<>();
@@ -29,5 +29,8 @@ public class User {
     }
     public String getName(){
         return name;
+    }
+    public void setName(String name) {
+        this.name = name;
     }
 }

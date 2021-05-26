@@ -5,7 +5,7 @@ import models.menu.MenuItem;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class PickUpOrder implements Order{
+public class PickUpOrder extends Order{
     private int id;
     private int userId;
     private int placeId;

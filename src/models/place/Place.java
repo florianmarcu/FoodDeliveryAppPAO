@@ -8,7 +8,12 @@ public class Place {
     private double[] location;
     private Menu menu;
     private PlaceType type;
+    private int rating;
 
+    public Place(int id, String name){
+        this.id = id;
+        this.name = name;
+    }
     public Place(int id, String name, double[] location, Menu menu, String type){
         this.id = id;
         this.name = name;
@@ -16,9 +21,9 @@ public class Place {
         this.menu = menu;
         PlaceType selectedType;
         switch(type){
-            case "CAFE": this.type = PlaceType.CAFE;
-            case "RESTAURANT": this.type = PlaceType.RESTAURANT;
-            case "PUB": this.type = PlaceType.PUB;
+            case "CAFE": this.type = PlaceType.CAFE; break;
+            case "RESTAURANT": this.type = PlaceType.RESTAURANT; break;
+            case "PUB": this.type = PlaceType.PUB; break;
             case "SUPERMARKET": this.type = PlaceType.SUPERMARKET; break;
         }
     }

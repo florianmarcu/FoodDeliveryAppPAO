@@ -15,7 +15,7 @@ public class UserCSVService {
             String name = u.get(0);
 
 
-            User user = new User(db.users.size(),name);
+            User user = new User(name);
 
             db.users.add(user);
 
